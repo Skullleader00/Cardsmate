@@ -1,0 +1,20 @@
+---
+title: 'ชื่อเด็ค'
+game: cardfight-vanguard
+classClan: 'Burnout Fight'
+tier: A                # S | A | B | C (meta tier)
+level: meta            # meta | mid | budget
+difficulty: intermediate
+budget: 'กลาง (สมมติ)'
+author: nova
+date: 2026-11-07
+summary: 'สรุปแนวเด็ค'
+playstyle: 'แนวทางเล่นสั้น ๆ'
+strengths: ['กดดันต้นเกม', 'จบไว']
+weaknesses: ['แพ้ board wipe']
+cardList:
+  - { section: 'Grade 3', name: 'Blaster Overdrive Dragon', qty: 4 }
+  - { section: 'Grade 0', name: 'Starter Crit Example', qty: 8 }
+featured: true
+---
+คู่มือการเล่นเด็ค (Markdown)…
