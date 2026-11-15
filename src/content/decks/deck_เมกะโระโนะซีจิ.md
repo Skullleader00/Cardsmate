@@ -1,31 +1,21 @@
 ---
-title: 'ตัวอย่าง: Burnout Fight Aggro (Vanguard)'
+title: 'เมกะโระโนะซีจิ'
 game: cardfight-vanguard
-classClan: 'Burnout Fight'
-tier: A
-level: meta
+classClan: 'ดราก้อนเอมไพร์'
+tier: A                
+level: meta            
 difficulty: intermediate
-budget: 'กลาง–สูง (สมมติ)'
+budget: 'กลาง'
 author: nova
-date: 2026-11-07
-tags: [vanguard, aggro, burnout-fight, เด็คเมต้า]
-summary: 'เด็คบุกเร็วอัดไม่หยุด ใช้พลัง RIDE ต่อเนื่องปิดเกมก่อนอีกฝ่ายตั้งสนามทัน'
-playstyle: 'บุกเร็วตั้งแต่เทิร์น 2 รักษาแรงกดดันด้วย CB สำหรับ boost'
-strengths:
-  - 'กดดันตั้งแต่ต้นเกม'
-  - 'จบเกมไว ไม่ยืดเยื้อ'
-  - 'เล่นเป็นเส้นตรง เรียนรู้ง่าย'
-weaknesses:
-  - 'หมดมือถ้าถูก board wipe'
-  - 'แพ้เด็ค control ที่อึด'
+date: 2026-11-15
+summary: 'รอใส่'
+playstyle: 'รอใส่'
+strengths: 
+- '6 เวฟบุกที่กดดันต่อเนื่อง'
+weaknesses: 
+- 'พลังโจมตีต่อเวฟต่ำกว่าเมต้า'
 cardList:
   - { section: 'Grade 3', name: 'Blaster Overdrive Dragon', qty: 4 }
-  - { section: 'Grade 3', name: 'Inferno Fang Example', qty: 2 }
-  - { section: 'Grade 2', name: 'Scorch Saber Example', qty: 4 }
-  - { section: 'Grade 2', name: 'Ember Warden Example', qty: 4 }
-  - { section: 'Grade 1', name: 'Spark Runner Example', qty: 4 }
-  - { section: 'Grade 1', name: 'Boost Pilot Example', qty: 4 }
-  - { section: 'Grade 0', name: 'Jeweled Dragon Eye', qty: 4 }
   - { section: 'Grade 0', name: 'Starter Crit Example', qty: 8 }
 featured: true
 ---
