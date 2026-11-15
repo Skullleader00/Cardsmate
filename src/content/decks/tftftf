@@ -1,20 +1,28 @@
 ---
-title: 'ชื่อเด็ค'
+title: 'ตัวอย่าง: Epsode Midrange (Vanguard)'
 game: cardfight-vanguard
-classClan: 'Burnout Fight'
-tier: A
-level: meta
+classClan: 'Epsode'
+tier: B
+level: mid
 difficulty: intermediate
 budget: 'กลาง (สมมติ)'
-author: nova
-date: 2026-11-07
-summary: 'สรุปแนวเด็ค'
-playstyle: 'แนวทางเล่นสั้น ๆ'
-strengths: ['กดดันต้นเกม', 'จบไว']
-weaknesses: ['แพ้ board wipe']
+author: mint
+date: 2026-11-01
+tags: [vanguard, midrange, epsode]
+summary: 'เด็คสมดุลเน้น value ต่อเทิร์น ดึงการ์ดและรักษากระดาน ยืดหยุ่นกับทุก matchup'
+playstyle: 'แลกทรัพยากรอย่างชาญฉลาด ใช้ draw engine หาชิ้นส่วนที่ถูกเวลา'
+strengths:
+  - 'ยืดหยุ่น ปรับแผนได้หลายทาง'
+  - 'มือไม่แห้งเพราะมี draw เยอะ'
+  - 'เล่นกับเมต้าได้ดี'
+weaknesses:
+  - 'ต้องตัดสินใจเยอะ มือใหม่อาจพลาด'
+  - 'ช้ากว่า aggro ถ้าตั้งตัวไม่ทัน'
 cardList:
-  - { section: 'Grade 3', name: 'Blaster Overdrive Dragon', qty: 4 }
-  - { section: 'Grade 0', name: 'Starter Crit Example', qty: 8 }
-featured: true
+  - { section: 'Grade 3', name: 'Crystal Seer Example', qty: 3 }
+  - { section: 'Grade 2', name: 'Rune Weaver Example', qty: 4 }
+  - { section: 'Grade 1', name: 'Jeweled Dragon Eye', qty: 4 }
+  - { section: 'Grade 1', name: 'Draw Sprite Example', qty: 4 }
+  - { section: 'Grade 0', name: 'Starter Crit Example', qty: 10 }
+featured: false
 ---
-คู่มือการเล่นเด็ค (Markdown)…
