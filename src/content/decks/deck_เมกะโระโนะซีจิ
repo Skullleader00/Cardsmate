@@ -17,7 +17,6 @@ weaknesses:
 cardList:
   - { section: 'Grade 3', name: 'Blaster Overdrive Dragon', qty: 4 }
   - { section: 'Grade 0', name: 'Starter Crit Example', qty: 8 }
-hero: /placeholders/เด็ค เมกะโระโนะซีจิ/ar01.png
 featured: true
 ---
 
