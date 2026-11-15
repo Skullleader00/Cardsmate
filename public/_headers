@@ -1,0 +1,16 @@
+# Cloudflare Pages — HTTP headers
+# เอกสาร: https://developers.cloudflare.com/pages/configuration/headers/
+
+# ทุกหน้า: security headers พื้นฐาน
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+
+# ไฟล์ build ที่มี hash ในชื่อ → cache ถาวร
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ดัชนีค้นหา Pagefind → cache ถาวร
+/pagefind/*
+  Cache-Control: public, max-age=31536000, immutable

@@ -1,7 +1,7 @@
 # Cardsmate 🃏
 
 เว็บไกด์ **ข่าว / รีวิว / ไกด์ / เด็ค / ปฏิทิน / ศัพท์** สำหรับเกมการ์ด (TCG · CCG · Digital card game) ภาษาไทย
-สร้างด้วย **Astro + TypeScript + Tailwind CSS v4** เป็น **static site ล้วน** (ไม่มี backend) ค้นหาด้วย **Pagefind** และ deploy ฟรีบน **GitHub Pages**
+สร้างด้วย **Astro + TypeScript + Tailwind CSS v4** เป็น **static site ล้วน** (ไม่มี backend) ค้นหาด้วย **Pagefind** และ deploy ฟรีบน **Cloudflare Pages** (ผ่าน Git integration)
 
 > ⚠️ เนื้อหา การ์ด ราคา วันที่ และเหตุการณ์ทั้งหมดในโปรเจกต์นี้เป็น **ข้อมูลตัวอย่าง/สมมติ** เพื่อสาธิตโครงสร้างเว็บเท่านั้น ไม่ใช่ข้อมูลทางการของเกมที่ถูกกล่าวถึง เกมและชื่อการ์ดเป็นเครื่องหมายการค้าของเจ้าของแต่ละราย
 
@@ -27,16 +27,33 @@ npm run preview  # พรีวิวผล build (รวมการค้น�
 
 > การค้นหาด้วย Pagefind จะพร้อมใช้งานหลัง `npm run build` แล้วเปิดผ่าน `npm run preview` (ตอน `npm run dev` ยังไม่มีดัชนี)
 
-## Deploy ขึ้น GitHub Pages
-1. Push โปรเจกต์นี้ไป GitHub repo (เช่นชื่อ `Cardsmate`)
-2. ใน repo ไปที่ **Settings → Pages → Build and deployment → Source: GitHub Actions**
-3. Workflow `.github/workflows/deploy.yml` จะ build และ deploy อัตโนมัติเมื่อ push เข้า `main`
-   - มันตั้ง `BASE_PATH=/<repo>` และ `PUBLIC_SITE_URL` ให้อัตโนมัติ จึงรองรับการอยู่ใต้ subpath
-4. เปิดเว็บที่ `https://<user>.github.io/<repo>/`
+## Deploy บน Cloudflare Pages (Git integration)
 
-### รัน/ดีพลอยกับโดเมนหรือ path อื่น
-- `astro dev`/`build` ใช้ค่า default `base: '/'`
-- กำหนดเองได้ผ่าน env: `BASE_PATH=/sub`, `PUBLIC_SITE_URL=https://example.com/`
+เว็บนี้เป็น static site ล้วน จึง deploy บน Cloudflare Pages ได้ฟรีโดยไม่ต้องมี backend/Workers
+
+### ครั้งแรก (ต่อ repo เข้า Cloudflare Pages)
+1. ไปที่ **Cloudflare Dashboard → Workers & Pages → Create → Pages → Connect to Git**
+2. เลือก GitHub repo ของโปรเจกต์นี้ (เช่น `Cardsmate`) แล้ว authorize ให้ Cloudflare อ่าน repo
+3. ตั้งค่า build:
+   - **Framework preset:** `Astro`
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+   - **Node version:** ไม่ต้องตั้ง — Cloudflare จะอ่านจากไฟล์ `.nvmrc` (ปัจจุบัน pin ไว้ที่ **Node 24 LTS**; แก้เป็นเวอร์ชัน LTS อื่นได้ถ้าต้องการ)
+4. กด **Save and Deploy** — Cloudflare จะ `npm ci` → build (รวม `postbuild` ที่รัน Pagefind) → เผยแพร่ `dist` อัตโนมัติ
+5. ทุกการ push เข้า branch ที่ตั้งไว้ (เช่น `main`) จะ build + deploy ใหม่เอง (Preview URL แยกต่อ branch/PR)
+
+### ตัวแปรสภาพแวดล้อม (optional)
+- `SITE_URL` — โดเมนจริงของเว็บ (ค่า default `https://cardsmate.pages.dev`) ใช้สร้าง canonical URL, Open Graph, `sitemap.xml` และ `robots.txt`
+  - **Production:** ตั้ง `SITE_URL = https://cardsmate.pages.dev` (หรือโดเมนของคุณ เช่น `https://cardsmate.com`)
+  - ถ้าไม่ตั้ง จะ fallback เป็นโดเมน default ด้านบน
+- Cloudflare Pages ต้องตั้ง `NODE_VERSION` เองเฉพาะเมื่อไม่ใช้ `.nvmrc` (repo นี้มี `.nvmrc` อยู่แล้ว)
+
+> หมายเหตุ: `astro.config.mjs` ไม่มี `base` (เสิร์ฟที่ root) จึงไม่ต้องตั้งค่า path เพิ่ม — ย้ายโดเมนทำได้ด้วยการเปลี่ยน `SITE_URL` ที่เดียว
+
+### ไฟล์ที่ Cloudflare Pages ใช้อยู่ใน `public/`
+- `_headers` — cache ยาว (immutable) ให้ `/_astro/*` และ `/pagefind/*` + security headers (`nosniff`, `Referrer-Policy`, `X-Frame-Options`) ทุกหน้า
+- `_redirects` — canonical `/index.html → /` และ alias ที่จำเป็น
+- หน้า 404 ภาษาไทยพร้อมช่องค้นหา (Astro สร้าง `dist/404.html` จาก `src/pages/404.astro`)
 
 ## โครงสร้างโฟลเดอร์
 ```
@@ -51,8 +68,8 @@ src/
   plugins/                 # remark-card-embed
   data/                    # authors.json, cards.json
   styles/global.css        # 🎨 ตัวแปรสี/ฟอนต์ทั้งหมด (+ prose)
-public/                    # favicon, manifest, icons/, placeholders/, data/cards.json
-.github/workflows/         # deploy GitHub Pages
+public/                    # favicon, manifest, icons/, placeholders/, data/cards.json, _headers, _redirects
+.nvmrc                     # pin Node LTS สำหรับ Cloudflare Pages build
 ```
 
 ## 🎨 แก้ธีม

@@ -1,0 +1,11 @@
+# Cloudflare Pages — redirects (เฉพาะที่จำเป็น/alias)
+# เอกสาร: https://developers.cloudflare.com/pages/configuration/redirects/
+
+# canonical: /index.html → /
+/index.html   /            301
+
+# alias ที่พบบ่อย
+/deck         /decks       301
+/tags         /glossary    301
+/feed         /rss.xml     301
+/privacy      /terms       301

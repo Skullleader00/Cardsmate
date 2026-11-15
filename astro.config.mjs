@@ -5,12 +5,11 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { remarkCardEmbed } from './src/plugins/remark-card-embed.ts';
 
-// Site URL — แก้เป็นโดเมนจริงของคุณ (GitHub Pages: https://<user>.github.io/<repo>/)
-const SITE = process.env.PUBLIC_SITE_URL || 'https://example.github.io/Cardsmate/';
+// Site URL — ตั้งผ่านตัวแปร SITE_URL เพื่อสลับเป็นโดเมนจริงทีหลังได้
+// ค่าเริ่มต้นคือโดเมนของ Cloudflare Pages (cardsmate.pages.dev)
+const SITE = process.env.SITE_URL || 'https://cardsmate.pages.dev';
 
 export default defineConfig({
-  // ตั้ง base อัตโนมัติเมื่อ deploy บน GitHub Pages (repo subpath)
-  base: process.env.BASE_PATH || '/',
   site: SITE,
   output: 'static',
   trailingSlash: 'ignore',

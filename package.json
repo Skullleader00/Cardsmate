@@ -3,6 +3,9 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Cardsmate — เว็บไกด์ ข่าว รีวิวเกมการ์ด (TCG/CCG/Digital) ภาษาไทย",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

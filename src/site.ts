@@ -4,7 +4,7 @@ export const SITE = {
   title: 'Cardsmate — ไกด์เกมการ์ดภาษาไทย',
   description:
     'เว็บไกด์ ข่าว รีวิว และเด็คเกมการ์ด (TCG / CCG / Digital card game) ภาษาไทย อ่านง่าย เริ่มเล่นได้จริง',
-  // base path สำหรับ GitHub Pages repo subpath (ต้องตรงกับ astro.config BASE_PATH)
+  // base path — Cloudflare Pages เสิร์ฟที่ root จึงเป็น '' ( Astro BASE_URL = '/' )
   path: (import.meta.env.BASE_URL || '/').replace(/\/$/, ''),
   locale: 'th',
   ogImage: '/og-default.png',

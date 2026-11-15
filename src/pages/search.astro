@@ -13,6 +13,7 @@ import PageHeader from '../components/PageHeader.astro';
 </BaseLayout>
 <script>
   const base = (window as any).CARDSMATE_BASE || '';
+  const q = new URLSearchParams(location.search).get('q') || '';
   const css = document.createElement('link');
   css.rel = 'stylesheet';
   css.href = base + '/pagefind/pagefind-ui.css';
@@ -21,7 +22,7 @@ import PageHeader from '../components/PageHeader.astro';
   s.src = base + '/pagefind/pagefind-ui.js';
   s.onload = () => {
     // @ts-ignore
-    new window.PagefindUI({ element: '#search', showSubResults: true, showImages: false, baseUrl: base + '/pagefind/' });
+    new window.PagefindUI({ element: '#search', showSubResults: true, showImages: false, baseUrl: base + '/pagefind/', searchTerm: q, processResult: undefined });
   };
   document.body.appendChild(s);
 </script>
