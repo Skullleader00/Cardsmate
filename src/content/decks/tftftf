@@ -2,8 +2,8 @@
 title: 'ชื่อเด็ค'
 game: cardfight-vanguard
 classClan: 'Burnout Fight'
-tier: A                # S | A | B | C (meta tier)
-level: meta            # meta | mid | budget
+tier: A                
+level: meta            
 difficulty: intermediate
 budget: 'กลาง (สมมติ)'
 author: nova
