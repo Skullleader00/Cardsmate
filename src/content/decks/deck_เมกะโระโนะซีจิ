@@ -10,8 +10,8 @@ author: nova
 date: 2026-11-15
 summary: 'รอใส่'
 playstyle: 'รอใส่'
-strengths: ['6 เวฟบุกที่กดดันต่อเนื่อง']
-weaknesses: ['พลังโจมตีต่อเวฟต่ำกว่าเมต้า']
+strengths: '6 เวฟบุกที่กดดันต่อเนื่อง'
+weaknesses: 'พลังโจมตีต่อเวฟต่ำกว่าเมต้า'
 cardList:
   - { section: 'Grade 3', name: 'Blaster Overdrive Dragon', qty: 4 }
   - { section: 'Grade 0', name: 'Starter Crit Example', qty: 8 }
