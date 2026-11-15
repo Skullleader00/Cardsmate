@@ -12,7 +12,7 @@ audience: 'ผู้ชำนาญ'
 tags: [ดราก้อนเอมไฟร์, ไกด์]
 featured: false
 draft: false
-hero: /placeholders/เด็ค เมกะโระโนะซีจิ/ar01.png
+hero: /placeholders/เด็คเมกะโระโนะซีจิ/ar01.png
 ---
 
 เด็ค เมกะโระโนะซีจิ
