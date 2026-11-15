@@ -12,6 +12,6 @@ audience: 'มือใหม่'
 tags: [มือใหม่, ไกด์]
 featured: false
 draft: false
-hero: /placeholders/card.svg
+hero: /placeholders/FB_IMG_1794504840647.jpg
 ---
 เหล่างูที่ดุเดือน nom nom num num งั่ม งั่ม
