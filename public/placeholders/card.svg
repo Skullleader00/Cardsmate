@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="560" viewBox="0 0 400 560">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b98cff"/><stop offset="1" stop-color="#f5c451"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="560" rx="24" fill="#171b2e" stroke="url(#g)" stroke-width="6"/>
+  <rect x="28" y="28" width="344" height="300" rx="14" fill="#1f2440"/>
+  <text x="200" y="185" font-family="Prompt, sans-serif" font-size="46" font-weight="800" fill="url(#g)" text-anchor="middle">CARD</text>
+  <text x="200" y="230" font-family="sans-serif" font-size="20" fill="#a6adc8" text-anchor="middle">placeholder</text>
+  <rect x="28" y="348" width="344" height="184" rx="14" fill="#1f2440"/>
+  <text x="200" y="450" font-family="sans-serif" font-size="18" fill="#a6adc8" text-anchor="middle">ข้อมูลตัวอย่าง</text>
+</svg>

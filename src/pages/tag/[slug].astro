@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import DeckCard from '../../components/DeckCard.astro';
+import { sortByDate, tagSlug } from '../../lib/utils';
+
+const articles = await getCollection('articles', ({ data }) => !data.draft);
+const decks = await getCollection('decks', ({ data }) => !data.draft);
+
+const tagMap = new Map<string, string>();
+for (const a of articles) for (const t of a.data.tags) tagMap.set(tagSlug(t), t);
+for (const d of decks) for (const t of d.data.tags) tagMap.set(tagSlug(t), t);
+
+export async function getStaticPaths() {
+  const arts = await getCollection('articles', ({ data }) => !data.draft);
+  const dks = await getCollection('decks', ({ data }) => !data.draft);
+  const map = new Map();
+  for (const a of arts) for (const t of a.data.tags) map.set(tagSlug(t), t);
+  for (const d of dks) for (const t of d.data.tags) map.set(tagSlug(t), t);
+  return [...map.entries()].map(([slug, label]) => ({ params: { slug }, props: { label } }));
+}
+
+const { label = Astro.params.slug } = Astro.props;
+const slug = Astro.params.slug!;
+const art = sortByDate(articles.filter((a) => a.data.tags.some((t) => tagSlug(t) === slug)));
+const dks = decks.filter((d) => d.data.tags.some((t) => tagSlug(t) === slug));
+---
+<BaseLayout title={`แท็ก #${label}`} description={`รวมเนื้อหาติดแท็ก #${label} (ข้อมูลตัวอย่าง)`}>
+  <PageHeader title={`#${label}`} eyebrow="Tag" desc="เนื้อหาทั้งหมดที่ติดแท็กนี้ (ข้อมูลตัวอย่าง)" />
+  <div class="mx-auto max-w-[var(--maxw)] px-4 py-8">
+    {art.length > 0 && (<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{art.map((a) => <ArticleCard article={a} />)}</div>)}
+    {dks.length > 0 && (<div class="mt-8 grid gap-4 lg:grid-cols-2">{dks.map((d) => <DeckCard deck={d} />)}</div>)}
+    {art.length === 0 && dks.length === 0 && <p class="py-16 text-center text-[var(--fg-muted)]">ไม่พบเนื้อหา</p>}
+  </div>
+</BaseLayout>

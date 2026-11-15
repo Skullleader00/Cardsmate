@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+/* =========================================================
+   Cardsmate — Design tokens (ตัวแปรสี/ฟอนต์ รวมไว้ที่เดียว)
+   แก้ธีมทั้งเว็บได้จากบล็อกนี้บล็อกเดียว
+   ========================================================= */
+
+/* Dark เป็นธีมหลัก */
+:root {
+  --bg: #0f1220;            /* พื้นเข้ม */
+  --bg-elev: #171b2e;       /* พื้นผิวraised (card) */
+  --bg-elev-2: #1f2440;     /* hover / nested */
+  --fg: #e8eaf6;            /* ตัวอักษรหลัก */
+  --fg-muted: #a6adc8;      /* ตัวอักษรทุติยภูมิ */
+  --border: #2a3052;
+
+  --accent: #b98cff;        /* ม่วง (foil) */
+  --accent-strong: #9a5cff;
+  --gold: #f5c451;          /* ทอง */
+  --gold-soft: #ffe1a3;
+
+  /* ป้ายประเภทเนื้อหา */
+  --tag-news: #4ea1ff;
+  --tag-guide: #43c59e;
+  --tag-review: #f5883c;
+  --tag-feature: #e05fa8;
+  --tag-deck: #f5c451;
+
+  /* tier */
+  --tier-s: #ff5470;
+  --tier-a: #f5883c;
+  --tier-b: #4ea1ff;
+  --tier-c: #8a93b5;
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --maxw: 1200px;
+
+  --font-body: "Noto Sans Thai", "Prompt", system-ui, sans-serif;
+  --font-head: "Prompt", "Noto Sans Thai", system-ui, sans-serif;
+
+  color-scheme: dark;
+}
+
+/* Light mode */
+.theme-light {
+  --bg: #f5f6fb;
+  --bg-elev: #ffffff;
+  --bg-elev-2: #eef0fa;
+  --fg: #16182a;
+  --fg-muted: #565d7d;
+  --border: #d8dcf0;
+
+  --accent: #7a3ff0;
+  --accent-strong: #6a2ee0;
+  --gold: #b8860b;
+  --gold-soft: #8a6500;
+
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-elev: var(--bg-elev);
+  --color-elev2: var(--bg-elev-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-gold: var(--gold);
+  --font-body: var(--font-body);
+  --font-head: var(--font-head);
+  --radius-card: var(--radius);
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, .font-head {
+  font-family: var(--font-head);
+  letter-spacing: -0.01em;
+}
+
+a { color: inherit; }
+
+/* Focus ring for accessibility (WCAG) */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Gradient foil accent used on headings / hero */
+.foil {
+  background: linear-gradient(100deg, var(--accent), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.card-surface {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* Subtle scrollbar */
+* { scrollbar-color: var(--border) transparent; }
+
+/* =========================================================
+   Article prose (เนื้อหาในบทความ)
+   ========================================================= */
+.prose-cardsmate {
+  color: var(--fg);
+  font-size: 1.06rem;
+  line-height: 1.85;
+}
+.prose-cardsmate h2 {
+  font-size: 1.6rem; font-weight: 700; margin: 2.2rem 0 1rem;
+  padding-bottom: .35rem; border-bottom: 1px solid var(--border);
+  scroll-margin-top: 5rem;
+}
+.prose-cardsmate h3 { font-size: 1.28rem; font-weight: 700; margin: 1.8rem 0 .7rem; scroll-margin-top: 5rem; }
+.prose-cardsmate p { margin: 1rem 0; }
+.prose-cardsmate ul, .prose-cardsmate ol { margin: 1rem 0; padding-left: 1.5rem; }
+.prose-cardsmate li { margin: .4rem 0; }
+.prose-cardsmate a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.prose-cardsmate blockquote {
+  margin: 1.4rem 0; padding: .8rem 1.2rem; border-left: 3px solid var(--gold);
+  background: var(--bg-elev); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--fg-muted);
+}
+.prose-cardsmate table {
+  display: block; width: 100%; overflow-x: auto; border-collapse: collapse; margin: 1.4rem 0;
+  font-size: .95rem;
+}
+.prose-cardsmate th, .prose-cardsmate td { border: 1px solid var(--border); padding: .6rem .8rem; text-align: left; white-space: nowrap; }
+.prose-cardsmate th { background: var(--bg-elev-2); }
+.prose-cardsmate code { background: var(--bg-elev-2); padding: .1rem .35rem; border-radius: 5px; font-size: .9em; }
+.prose-cardsmate img { border-radius: var(--radius-sm); max-width: 100%; height: auto; }
+.prose-cardsmate hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+/* Card embed token in prose */
+.card-embed {
+  color: var(--gold); font-weight: 600; cursor: help;
+  border-bottom: 1px dashed var(--gold); white-space: nowrap;
+}
+
+/* Pagefind UI theme bridge */
+.pagefind-ui__search-input,
+.pagefind-ui__drawer { color: var(--fg); }

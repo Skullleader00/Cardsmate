@@ -1,0 +1,127 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { SITE, url, TYPE_LABEL } from '../site';
+import { formatDate, readingTime, DIFFICULTY_LABEL, LEVEL_LABEL } from '../lib/utils';
+import authors from '../data/authors.json';
+import TypeBadge from '../components/TypeBadge.astro';
+import InfoBox from '../components/InfoBox.astro';
+import TOC from '../components/TOC.astro';
+import Share from '../components/Share.astro';
+import TagPill from '../components/TagPill.astro';
+import ReviewBadge from '../components/ReviewBadge.astro';
+import TierBadge from '../components/TierBadge.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+
+type Props = {
+  kind: 'article' | 'deck';
+  id: string;
+  title: string;
+  description: string;
+  type?: string;
+  game?: string;
+  author: string;
+  date: Date;
+  updated?: Date;
+  tags?: string[];
+  hero?: string;
+  reviewScore?: number;
+  difficulty?: string;
+  budget?: string;
+  audience?: string;
+  level?: string;
+  tier?: string;
+  minutes: number;
+  headings?: any[];
+  related?: any[];
+};
+const p = Astro.props;
+const author = (authors as any)[p.author];
+const heroColor = p.type === 'review' ? 'var(--tag-review)' : p.kind === 'deck' ? 'var(--gold)' : 'var(--accent)';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': p.kind === 'deck' ? 'Article' : 'Article',
+  headline: p.title,
+  description: p.description,
+  datePublished: new Date(p.date).toISOString(),
+  dateModified: new Date(p.updated || p.date).toISOString(),
+  inLanguage: 'th',
+  author: { '@type': 'Person', name: author?.name || p.author },
+  publisher: { '@type': 'Organization', name: SITE.name },
+  mainEntityOfPage: new URL(p.kind === 'deck' ? `/decks/${p.id}` : `/article/${p.id}`, Astro.site).toString(),
+};
+---
+<BaseLayout title={p.title} description={p.description} jsonLd={jsonLd}
+  ogImage={p.hero ? url(p.hero) : undefined}>
+  <!-- Hero -->
+  <header class="border-b border-[var(--border)]">
+    <div class="mx-auto max-w-[var(--maxw)] px-4 py-8">
+      <nav class="mb-4 text-sm text-[var(--fg-muted)]" aria-label=" breadcrumb">
+        <a href={url('/')} class="hover:text-[var(--accent)]">หน้าแรก</a>
+        <span class="px-1">/</span>
+        <a href={url(p.kind === 'deck' ? '/decks' : `/${p.type}`)} class="hover:text-[var(--accent)]">{p.kind === 'deck' ? 'เด็ค' : TYPE_LABEL[p.type || '']}</a>
+      </nav>
+      <div class="flex flex-wrap items-center gap-2">
+        {p.kind === 'deck' ? <TierBadge tier={p.tier || 'C'} /> : <TypeBadge type={p.type || ''} size="lg" />}
+        {p.game && <a href={url(`/game/${p.game}`)} class="text-sm font-semibold text-[var(--accent)] hover:underline">#{p.game}</a>}
+        {p.level && <span class="rounded-full bg-[var(--bg-elev-2)] px-2 py-0.5 text-xs text-[var(--gold)]">{LEVEL_LABEL[p.level]}</span>}
+      </div>
+      <h1 class="mt-3 max-w-4xl font-head text-3xl font-black leading-tight sm:text-4xl">{p.title}</h1>
+      <p class="mt-3 max-w-3xl text-lg text-[var(--fg-muted)]">{p.description}</p>
+      <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--fg-muted)]">
+        {author && (
+          <a href={url(`/author/${p.author}`)} class="flex items-center gap-2 hover:text-[var(--accent)]">
+            <img src={url(author.avatar)} alt="" class="h-8 w-8 rounded-full object-cover" width="32" height="32" />
+            <span class="font-semibold text-[var(--fg)]">{author.name}</span>
+          </a>
+        )}
+        <span>เผยแพร่ <time datetime={new Date(p.date).toISOString()}>{formatDate(p.date)}</time></span>
+        {p.updated && <span>อัปเดต <time>{formatDate(p.updated)}</time></span>}
+        <span>{p.minutes} นาทีในการอ่าน</span>
+      </div>
+    </div>
+    {p.kind === 'article' && (
+      <div class="relative mx-auto max-w-[var(--maxw)] px-4 pb-8">
+        <div class="relative aspect-[21/9] overflow-hidden rounded-2xl border border-[var(--border)]">
+          {p.hero ? (
+            <img src={url(p.hero)} alt="" class="h-full w-full object-cover" />
+          ) : (
+            <div class="grid h-full w-full place-items-center" style={`background:linear-gradient(135deg, color-mix(in srgb, ${heroColor} 55%, #0f1220), #0f1220)`}>
+              <span class="font-head text-7xl font-black text-white/70">{p.title.slice(0, 1)}</span>
+            </div>
+          )}
+          {p.reviewScore != null && <ReviewBadge score={p.reviewScore} />}
+        </div>
+      </div>
+    )}
+  </header>
+
+  <div class="mx-auto grid max-w-[var(--maxw)] gap-8 px-4 py-10 lg:grid-cols-[minmax(0,1fr)_280px]">
+    <article class="prose-cardsmate min-w-0 max-w-none">
+      <InfoBox difficulty={p.difficulty} budget={p.budget} audience={p.audience} />
+      <slot />
+      <div class="mt-10 border-t border-[var(--border)] pt-6">
+        <Share />
+        {p.tags && p.tags.length > 0 && (
+          <div class="mt-6 flex flex-wrap gap-2">
+            {p.tags.map((t: string) => <TagPill tag={t} />)}
+          </div>
+        )}
+      </div>
+    </article>
+
+    <aside class="hidden lg:block">
+      <div class="sticky top-20 space-y-6">
+        <TOC headings={p.headings || []} />
+      </div>
+    </aside>
+  </div>
+
+  {p.related && p.related.length > 0 && (
+    <section class="mx-auto max-w-[var(--maxw)] px-4 pb-12">
+      <h2 class="mb-4 font-head text-xl font-extrabold">บทความที่เกี่ยวข้อง</h2>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {p.related.map((r: any) => <ArticleCard article={r} />)}
+      </div>
+    </section>
+  )}
+</BaseLayout>

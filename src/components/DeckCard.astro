@@ -1,0 +1,29 @@
+---
+import { url } from '../site';
+import { formatDate, LEVEL_LABEL } from '../lib/utils';
+import TierBadge from './TierBadge.astro';
+
+const { deck } = Astro.props;
+const d = deck.data;
+const href = url(`/decks/${deck.id}`);
+const cards = (d.cardList || []).reduce((n, c) => n + c.qty, 0);
+---
+<a href={href} class="group flex gap-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-4 transition hover:border-[var(--accent)]">
+  <div class="flex flex-col items-center gap-2">
+    <TierBadge tier={d.tier} />
+    <span class="rounded-full bg-[var(--bg-elev-2)] px-2 py-0.5 text-[10px] font-semibold text-[var(--gold)]">{LEVEL_LABEL[d.level]}</span>
+  </div>
+  <div class="min-w-0 flex-1">
+    <div class="flex items-center gap-2 text-xs text-[var(--fg-muted)]">
+      <span class="font-semibold text-[var(--accent)]">#{d.game}</span>
+      {d.classClan && <span>· {d.classClan}</span>}
+    </div>
+    <h3 class="mt-0.5 truncate font-head text-base font-bold group-hover:text-[var(--accent)]">{d.title}</h3>
+    <p class="mt-1 line-clamp-2 text-sm text-[var(--fg-muted)]">{d.summary}</p>
+    <div class="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-[var(--fg-muted)]">
+      <span>การ์ด {cards} ใบ</span>
+      {d.budget && <span>· {d.budget}</span>}
+      <span>· {formatDate(d.date)}</span>
+    </div>
+  </div>
+</a>

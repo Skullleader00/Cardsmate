@@ -1,0 +1,10 @@
+---
+const { title, desc, eyebrow } = Astro.props;
+---
+<div class="border-b border-[var(--border)] bg-[var(--bg-elev)]">
+  <div class="mx-auto max-w-[var(--maxw)] px-4 py-10">
+    {eyebrow && <p class="text-xs font-semibold uppercase tracking-widest text-[var(--accent)]">{eyebrow}</p>}
+    <h1 class="mt-1 font-head text-3xl font-black sm:text-4xl">{title}</h1>
+    {desc && <p class="mt-2 max-w-2xl text-[var(--fg-muted)]">{desc}</p>}
+  </div>
+</div>

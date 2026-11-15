@@ -1,0 +1,29 @@
+---
+// รายการบทความแบบใช้ซ้ำ (news/guide/review/feature)
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { url } from '../site';
+
+const { title, description, eyebrow, articles, games = [] } = Astro.props;
+const activeGame = Astro.url.searchParams.get('game') || '';
+const list = activeGame ? articles.filter((a) => a.data.game === activeGame) : articles;
+---
+<BaseLayout title={title} description={description}>
+  <PageHeader title={title} desc={description} eyebrow={eyebrow} />
+  <div class="mx-auto max-w-[var(--maxw)] px-4 py-8">
+    {games.length > 0 && (
+      <div class="mb-6 flex flex-wrap gap-2">
+        <a href={url(Astro.url.pathname)} class={`rounded-full border px-3 py-1 text-sm ${!activeGame ? 'border-[var(--gold)] bg-[var(--gold)] text-[#0f1220]' : 'border-[var(--border)] text-[var(--fg-muted)]'}`}>ทั้งหมด</a>
+        {games.map((g) => (
+          <a href={`${url(Astro.url.pathname)}?game=${g.id}`} class={`rounded-full border px-3 py-1 text-sm ${activeGame === g.id ? 'border-[var(--gold)] bg-[var(--gold)] text-[#0f1220]' : 'border-[var(--border)] text-[var(--fg-muted)]'}`}>{g.data.shortName}</a>
+        ))}
+      </div>
+    )}
+    {list.length > 0 ? (
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{list.map((a) => <ArticleCard article={a} showType={false} />)}</div>
+    ) : (
+      <p class="py-16 text-center text-[var(--fg-muted)]">ยังไม่มีบทความในส่วนนี้</p>
+    )}
+  </div>
+</BaseLayout>

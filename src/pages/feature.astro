@@ -1,0 +1,8 @@
+---
+import { getCollection } from 'astro:content';
+import Listing from '../components/ArticleListing.astro';
+import { sortByDate } from '../lib/utils';
+const articles = sortByDate(await getCollection('articles', ({ data }) => !data.draft && data.type === 'feature'));
+const games = await getCollection('games');
+---
+<Listing title="บทความพิเศษ" eyebrow="Feature" description="บทวิเคราะห์ เทรนด์ และบทความเจาะลึกที่คัดมา (เนื้อหาตัวอย่าง)" articles={articles} games={games} />

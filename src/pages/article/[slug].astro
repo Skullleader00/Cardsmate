@@ -1,0 +1,40 @@
+---
+import { getCollection, render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { readingTime } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', ({ data }) => !data.draft);
+  return articles.map((a) => ({ params: { slug: a.id }, props: { article: a } }));
+}
+
+const { article } = Astro.props;
+const { Content, headings } = await render(article);
+const all = await getCollection('articles', ({ data }) => !data.draft);
+const related = all
+  .filter((a) => a.id !== article.id && (a.data.game === article.data.game || a.data.type === article.data.type))
+  .slice(0, 3);
+const d = article.data;
+---
+<ArticleLayout
+  kind="article"
+  id={article.id}
+  title={d.title}
+  description={d.description}
+  type={d.type}
+  game={d.game}
+  author={d.author}
+  date={d.date}
+  updated={d.updated}
+  tags={d.tags}
+  hero={d.hero}
+  reviewScore={d.reviewScore}
+  difficulty={d.difficulty}
+  budget={d.budget}
+  audience={d.audience}
+  minutes={readingTime(article.body || '')}
+  headings={headings}
+  related={related}
+>
+  <Content />
+</ArticleLayout>

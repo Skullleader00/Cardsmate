@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { getCollection } from 'astro:content';
+const gameCount = (await getCollection('games')).length;
+const articleCount = (await getCollection('articles', ({ data }) => !data.draft)).length;
+const deckCount = (await getCollection('decks', ({ data }) => !data.draft)).length;
+---
+<BaseLayout title="เกี่ยวกับเรา" description="Cardsmate คือเว็บไกด์เกมการ์ดภาษาไทย — ภารกิจและสิ่งที่เราทำ">
+  <PageHeader title="เกี่ยวกับ Cardsmate" eyebrow="About" desc="เว็บไกด์เกมการ์ดภาษาไทย ที่อ่านง่ายและเริ่มเล่นได้จริง" />
+  <div class="mx-auto max-w-3xl px-4 py-10 prose-cardsmate">
+    <p><b>Cardsmate</b> คือแหล่งรวม <em>ข่าว ไกด์ รีวิว เด็ค และปฏิทินเซ็ตใหม่</em> ของเกมการ์ด (TCG / CCG / Digital card game) สำหรับผู้เล่นไทย เราตั้งใจให้ทุกบทความอ่านเข้าใจง่าย ตั้งแต่คนเพิ่งเริ่มจนถึงสายแข่งขัน</p>
+
+    <div class="my-6 grid grid-cols-3 gap-3 text-center not-prose">
+      <div class="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-4"><div class="font-head text-3xl font-black foil">{gameCount}</div><div class="text-sm text-[var(--fg-muted)]">เกมที่รองรับ</div></div>
+      <div class="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-4"><div class="font-head text-3xl font-black foil">{articleCount}</div><div class="text-sm text-[var(--fg-muted)]">บทความ</div></div>
+      <div class="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-4"><div class="font-head text-3xl font-black foil">{deckCount}</div><div class="text-sm text-[var(--fg-muted)]">เด็ค</div></div>
+    </div>
+
+    <h2>สิ่งที่เราทำ</h2>
+    <ul>
+      <li>สรุปข่าวเซ็ตใหม่ แบนลิสต์ และงานแข่งให้กระชับ</li>
+      <li>เขียนไกด์สำหรับมือใหม่ อธิบายศัพท์และกติกาเป็นภาษาไทย</li>
+      <li>รีวิวเซ็ต/สตาร์เตอร์เด็คพร้อมคะแนนเต็ม 10</li>
+      <li>รวมเด็คแนะนำพร้อมฟิลเตอร์ระดับเมต้า/กลาง/งบประหยัด</li>
+    </ul>
+
+    <div class="rounded-2xl border border-[var(--gold)] bg-[color-mix(in_srgb,var(--gold)_10%,transparent)] p-5 not-prose">
+      <p class="font-semibold text-[var(--gold)]">ประกาศเรื่องข้อมูลตัวอย่าง</p>
+      <p class="mt-1 text-sm text-[var(--fg-muted)]">เนื้อหา การ์ด ราคา วันที่ และเหตุการณ์ทั้งหมดในเว็บไซต์สาธิตนี้เป็น <b>ข้อมูลตัวอย่าง/สมมติ</b> เพื่อแสดงโครงสร้างเว็บเท่านั้น ไม่ใช่ข้อมูลทางการของเกมที่กล่าวถึง เกมและชื่อการ์ดเป็นเครื่องหมายการค้าของเจ้าของแต่ละราย</p>
+    </div>
+  </div>
+</BaseLayout>

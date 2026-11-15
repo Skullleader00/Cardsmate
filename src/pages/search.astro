@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+---
+<BaseLayout title="ค้นหา" description="ค้นหาบทความ เด็ค และเนื้อหาทั้งหมดใน Cardsmate">
+  <PageHeader title="ค้นหา" eyebrow="Search" desc="ค้นหาทั่วทั้งเว็บ (สร้างดัชนีด้วย Pagefind ตอน build)" />
+  <div class="mx-auto max-w-3xl px-4 py-8">
+    <div id="search"></div>
+    <p class="mt-6 text-center text-sm text-[var(--fg-muted)]">
+      หมายเหตุ: ผลค้นหาจะพร้อมใช้งานหลังรัน <code>npm run build</code> (Pagefind สร้างดัชนี) — กด <kbd>/</kbd> จากหน้าไหนก็ได้เพื่อมาหน้านี้
+    </p>
+  </div>
+</BaseLayout>
+<script>
+  const base = (window as any).CARDSMATE_BASE || '';
+  const css = document.createElement('link');
+  css.rel = 'stylesheet';
+  css.href = base + '/pagefind/pagefind-ui.css';
+  document.head.appendChild(css);
+  const s = document.createElement('script');
+  s.src = base + '/pagefind/pagefind-ui.js';
+  s.onload = () => {
+    // @ts-ignore
+    new window.PagefindUI({ element: '#search', showSubResults: true, showImages: false, baseUrl: base + '/pagefind/' });
+  };
+  document.body.appendChild(s);
+</script>

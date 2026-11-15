@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Blaster Overdrive Dragon",
+    "game": "cardfight-vanguard",
+    "clan": "Burnout Fight",
+    "grade": "3",
+    "cost": "2",
+    "power": "13000",
+    "ability": "ตัวอย่าง — เมื่อ RIDE สำเร็จ บินโจมตีข้าม vanguard circle",
+    "rarity": "RRR",
+    "image": "/placeholders/card.svg"
+  },
+  {
+    "name": "Jeweled Dragon Eye",
+    "game": "cardfight-vanguard",
+    "clan": "Epsode",
+    "grade": "0",
+    "cost": "-",
+    "power": "5000",
+    "ability": "ตัวอย่าง — เมื่อออก (call) ดึงการ์ด 1 ใบ",
+    "rarity": "R",
+    "image": "/placeholders/card.svg"
+  },
+  {
+    "name": "Cyberse Witch",
+    "game": "yugioh-master-duel",
+    "clan": "Cyberse",
+    "grade": "Link-2",
+    "cost": "2 monsters",
+    "power": "1400 ATK",
+    "ability": "ตัวอย่าง — เชื่อมต่อเพื่อเปิดพื้นที่ Extra Deck",
+    "rarity": "Ultra Rare",
+    "image": "/placeholders/card.svg"
+  },
+  {
+    "name": "Ash Blossom & Joyous Spring",
+    "game": "yugioh-master-duel",
+    "clan": "Fiend / Hand Trap",
+    "grade": "Level 1",
+    "cost": "-",
+    "power": "0 / 1800",
+    "ability": "ตัวอย่าง — ยกเลิกการดึงการ์ดจากเด็ค (มือกับดัก)",
+    "rarity": "Super Rare",
+    "image": "/placeholders/card.svg"
+  },
+  {
+    "name": "Judgement Archangel",
+    "game": "shadowverse-world-beyond",
+    "clan": "Paladin",
+    "grade": "Legendary",
+    "cost": "5 PP",
+    "power": "6/6",
+    "ability": "ตัวอย่าง — Fanfare ทำลาย follower ที่มีพลังโจมตี 5 ขึ้นไป",
+    "rarity": "Legendary",
+    "image": "/placeholders/card.svg"
+  },
+  {
+    "name": "Forest Warden",
+    "game": "shadowverse-world-beyond",
+    "clan": "Forestcraft",
+    "grade": "Gold",
+    "cost": "3 PP",
+    "power": "2/4",
+    "ability": "ตัวอย่าง — Last Words อัญเชิญ token 2 ตัว",
+    "rarity": "Gold",
+    "image": "/placeholders/card.svg"
+  }
+]

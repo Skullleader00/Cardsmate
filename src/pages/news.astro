@@ -1,0 +1,8 @@
+---
+import { getCollection } from 'astro:content';
+import Listing from '../components/ArticleListing.astro';
+import { sortByDate } from '../lib/utils';
+const articles = sortByDate(await getCollection('articles', ({ data }) => !data.draft && data.type === 'news'));
+const games = await getCollection('games');
+---
+<Listing title="ข่าวเกมการ์ด" eyebrow="News" description="เซ็ตใหม่ แบนลิสต์ ประกาศ และงานแข่ง — อัปเดตล่าสุด (เนื้อหาตัวอย่าง)" articles={articles} games={games} />

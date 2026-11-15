@@ -1,0 +1,23 @@
+---
+// กล่องข้อมูลมาตรฐานในบทความ: ระดับความยาก / งบโดยประมาณ / เหมาะกับใคร
+import { DIFFICULTY_LABEL } from '../lib/utils';
+const { difficulty, budget, audience, time } = Astro.props;
+const rows: { label: string; value: string }[] = [];
+if (difficulty) rows.push({ label: 'ระดับความยาก', value: DIFFICULTY_LABEL[difficulty] || difficulty });
+if (budget) rows.push({ label: 'งบประมาณโดยประมาณ', value: budget });
+if (audience) rows.push({ label: 'เหมาะกับ', value: audience });
+if (time) rows.push({ label: 'เวลาอ่าน', value: `${time} นาที` });
+---
+{rows.length > 0 && (
+  <aside class="my-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-5">
+    <h2 class="font-head text-sm font-bold uppercase tracking-wide text-[var(--gold)]">ข้อมูลสรุป</h2>
+    <dl class="mt-3 grid gap-3 sm:grid-cols-2">
+      {rows.map((r) => (
+        <div>
+          <dt class="text-xs text-[var(--fg-muted)]">{r.label}</dt>
+          <dd class="font-semibold">{r.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </aside>
+)}

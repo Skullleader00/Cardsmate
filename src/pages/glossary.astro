@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+
+const terms = (await getCollection('glossary')).sort((a, b) =>
+  a.data.termEn.localeCompare(b.data.termEn, 'en'),
+);
+const games = await getCollection('games');
+const gameName = new Map(games.map((g) => [g.id, g.data.shortName]));
+gameName.set('general', 'ทั่วไป');
+---
+<BaseLayout title="พจนานุกรมศัพท์เกมการ์ด" description="รวมศัพท์เฉพาะเกมการ์ด ไทย–อังกฤษ ค้นหาได้ (เนื้อหาตัวอย่าง)">
+  <PageHeader title="พจนานุกรมศัพท์" eyebrow="Glossary" desc="ศัพท์เฉพาะเกมการ์ด ไทย–อังกฤษ พิมพ์เพื่อค้นหาได้ทันที (คำอธิบายเป็นข้อมูลตัวอย่าง)" />
+  <div class="mx-auto max-w-[var(--maxw)] px-4 py-8">
+    <input id="glossary-search" type="search" placeholder="ค้นหาศัพท์ไทยหรืออังกฤษ…"
+      class="mb-6 w-full max-w-md rounded-xl border border-[var(--border)] bg-[var(--bg-elev)] px-4 py-3 outline-none focus:border-[var(--accent)]" />
+    <div id="glossary-list" class="grid gap-3 sm:grid-cols-2">
+      {terms.map((t) => (
+        <details id={t.id} data-search={`${t.data.term} ${t.data.termEn} ${t.data.short}`}
+          class="group rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-4 open:border-[var(--accent)]">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-3">
+            <span>
+              <b class="font-head">{t.data.term}</b>
+              {t.data.termEn && <span class="ml-2 text-sm text-[var(--fg-muted)]">{t.data.termEn}</span>}
+            </span>
+            <span class="shrink-0 rounded-full bg-[var(--bg-elev-2)] px-2 py-0.5 text-[11px] text-[var(--gold)]">{gameName.get(t.data.game) || t.data.game}</span>
+          </summary>
+          <p class="mt-2 text-sm text-[var(--fg-muted)]">{t.data.short}</p>
+        </details>
+      ))}
+    </div>
+    <p id="glossary-empty" class="hidden py-16 text-center text-[var(--fg-muted)]">ไม่พบศัพท์ที่ค้นหา</p>
+  </div>
+</BaseLayout>
+<script>
+  const input = document.getElementById('glossary-search') as HTMLInputElement;
+  input?.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0;
+    document.querySelectorAll('#glossary-list > details').forEach((el) => {
+      const ok = !q || (el as HTMLElement).dataset.search!.toLowerCase().includes(q);
+      (el as HTMLElement).style.display = ok ? '' : 'none';
+      if (ok) shown++;
+    });
+    document.getElementById('glossary-empty')?.classList.toggle('hidden', shown !== 0);
+    if (q) document.querySelectorAll('#glossary-list > details').forEach((el) => ((el as HTMLDetailsElement).open = (el as HTMLElement).style.display !== 'none'));
+  });
+  // เปิดรายการจาก URL hash
+  if (location.hash) {
+    const el = document.querySelector(location.hash) as HTMLDetailsElement | null;
+    if (el?.tagName === 'DETAILS') el.open = true;
+  }
+</script>

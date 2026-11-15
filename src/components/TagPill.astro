@@ -1,0 +1,10 @@
+---
+import { url } from '../site';
+import { tagSlug } from '../lib/utils';
+const { tag, active = false } = Astro.props;
+const slug = tagSlug(String(tag));
+---
+<a href={url(`/tag/${slug}`)}
+  class={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition ${active ? 'border-[var(--gold)] bg-[var(--gold)] text-[#0f1220]' : 'border-[var(--border)] bg-[var(--bg-elev)] text-[var(--fg-muted)] hover:border-[var(--accent)] hover:text-[var(--fg)]'}`}>
+  #{tag}
+</a>

@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { SITE } from '../site';
+---
+<BaseLayout title="ติดต่อเรา" description="ติดต่อทีมงาน Cardsmate เสนอบทความ ติชม หรือร่วมเขียน">
+  <PageHeader title="ติดต่อเรา" eyebrow="Contact" desc="มีข้อเสนอ ติชม หรืออยากเขียนบทความกับเรา? ทักมาได้เลย" />
+  <div class="mx-auto max-w-2xl px-4 py-10">
+    <p class="mb-6 text-[var(--fg-muted)]">ส่งอีเมลหาเราได้ที่ <a class="text-[var(--accent)] underline" href={`mailto:${SITE.email}`}>{SITE.email}</a> หรือกรอกฟอร์มด้านล่าง (ฟอร์มจะเปิดแอปเมลของคุณ — เว็บนี้เป็น static จึงไม่มีเซิร์ฟเวอร์รับข้อมูล)</p>
+    <form id="contact-form" class="space-y-4">
+      <div>
+        <label class="mb-1 block text-sm font-semibold" for="c-name">ชื่อ</label>
+        <input id="c-name" required class="w-full rounded-xl border border-[var(--border)] bg-[var(--bg-elev)] px-4 py-2.5 outline-none focus:border-[var(--accent)]" />
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-semibold" for="c-email">อีเมล</label>
+        <input id="c-email" type="email" required class="w-full rounded-xl border border-[var(--border)] bg-[var(--bg-elev)] px-4 py-2.5 outline-none focus:border-[var(--accent)]" />
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-semibold" for="c-msg">ข้อความ</label>
+        <textarea id="c-msg" rows="6" required class="w-full rounded-xl border border-[var(--border)] bg-[var(--bg-elev)] px-4 py-2.5 outline-none focus:border-[var(--accent)]"></textarea>
+      </div>
+      <button type="submit" class="rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--gold)] px-5 py-3 font-semibold text-[#0f1220]">ส่งข้อความ</button>
+    </form>
+  </div>
+</BaseLayout>
+<script>
+  document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = (document.getElementById('c-name') as HTMLInputElement).value;
+    const email = (document.getElementById('c-email') as HTMLInputElement).value;
+    const msg = (document.getElementById('c-msg') as HTMLTextAreaElement).value;
+    const body = encodeURIComponent(`${msg}\n\n— ${name} <${email}>`);
+    location.href = `mailto:hello@cardsmate.example?subject=${encodeURIComponent('[Cardsmate] ' + name)}&body=${body}`;
+  });
+</script>

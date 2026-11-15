@@ -1,0 +1,17 @@
+---
+// Table of Contents อัตโนมัติจาก headings ของบทความ
+const { headings = [] } = Astro.props;
+const items = headings.filter((h: any) => h.depth >= 2 && h.depth <= 3);
+---
+{items.length > 0 && (
+  <nav class="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-5" aria-label="สารบัญ">
+    <h2 class="font-head text-sm font-bold uppercase tracking-wide text-[var(--gold)]">สารบัญ</h2>
+    <ul class="mt-3 space-y-1.5 text-sm">
+      {items.map((h: any) => (
+        <li style={`padding-left:${(h.depth - 2) * 0.9}rem`}>
+          <a href={`#${h.slug}`} class="text-[var(--fg-muted)] hover:text-[var(--accent)]">{h.text}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}

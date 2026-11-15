@@ -1,0 +1,11 @@
+---
+import { TYPE_LABEL, TYPE_COLOR } from '../site';
+const { type, size = 'sm' } = Astro.props;
+const color = TYPE_COLOR[type] || 'var(--accent)';
+const label = TYPE_LABEL[type] || type;
+const pad = size === 'lg' ? 'px-3 py-1 text-sm' : 'px-2 py-0.5 text-xs';
+---
+<span class={`inline-flex items-center rounded-full font-semibold uppercase tracking-wide ${pad}`}
+  style={`color:${color};background:color-mix(in srgb, ${color} 18%, transparent);border:1px solid color-mix(in srgb, ${color} 40%, transparent)`}>
+  {label}
+</span>

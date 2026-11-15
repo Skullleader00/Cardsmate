@@ -1,0 +1,7 @@
+---
+// meta tier badge S/A/B/C
+const { tier } = Astro.props;
+const color = `var(--tier-${String(tier).toLowerCase()})`;
+---
+<span class="inline-grid h-8 w-8 place-items-center rounded-lg font-head text-sm font-extrabold text-[#0f1220]"
+  style={`background:${color}`} title={`Meta tier ${tier}`} aria-label={`Meta tier ${tier}`}>{tier}</span>

@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../site';
+import { getCollection } from 'astro:content';
+import { sortByDate, setPhase, readingTime } from '../lib/utils';
+import ArticleCard from '../components/ArticleCard.astro';
+import DeckCard from '../components/DeckCard.astro';
+import GameCard from '../components/GameCard.astro';
+import SetRow from '../components/SetRow.astro';
+import TagPill from '../components/TagPill.astro';
+import TypeBadge from '../components/TypeBadge.astro';
+
+const articles = await getCollection('articles', ({ data }) => !data.draft);
+const decks = await getCollection('decks', ({ data }) => !data.draft);
+const games = await getCollection('games');
+const sets = await getCollection('sets', ({ data }) => !data.draft);
+
+const gameName = new Map(games.map((g) => [g.id, g.data.shortName]));
+
+const latest = sortByDate(articles);
+const hero = latest.find((a) => a.data.featured) || latest[0];
+const nextUp = sortByDate(sets.filter((s) => setPhase(new Date(s.data.date)) !== 'released')).slice(0, 2);
+const news = latest.filter((a) => a.data.type === 'news').slice(0, 3);
+const guides = latest.filter((a) => a.data.type === 'guide').slice(0, 3);
+const trendingDecks = [...decks].sort((a, b) => (a.data.featured === b.data.featured ? 0 : a.data.featured ? -1 : 1)).slice(0, 4);
+const popularGames = [...games].sort((a, b) => a.data.order - b.data.order);
+const upcoming = sortByDate(sets.filter((s) => setPhase(new Date(s.data.date)) !== 'released'));
+const allTags = [...new Set(articles.flatMap((a) => a.data.tags))].slice(0, 18);
+
+const siteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Cardsmate',
+  inLanguage: 'th',
+  description: 'เว็บไกด์ ข่าว รีวิว และเด็คเกมการ์ดภาษาไทย',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: { '@type': 'EntryPoint', urlTemplate: new URL('/search?q={search_term_string}', Astro.site).toString() },
+    'query-input': 'required name=search_term_string',
+  },
+};
+---
+<BaseLayout jsonLd={siteJsonLd}>
+  <!-- HERO -->
+  <section class="relative overflow-hidden border-b border-[var(--border)]">
+    <div class="pointer-events-none absolute inset-0 opacity-30" style="background:radial-gradient(60% 60% at 80% 0%, var(--accent), transparent), radial-gradient(50% 50% at 10% 100%, var(--gold), transparent)"></div>
+    <div class="relative mx-auto grid max-w-[var(--maxw)] items-center gap-8 px-4 py-14 lg:grid-cols-2">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-widest text-[var(--gold)]">ไกด์เกมการ์ดภาษาไทย</p>
+        <h1 class="mt-2 font-head text-4xl font-black leading-tight sm:text-5xl">อ่านง่าย เริ่มเล่นเป็น <span class="foil">ตามทุกข่าวและเมต้า</span></h1>
+        <p class="mt-4 max-w-xl text-lg text-[var(--fg-muted)]">Cardsmate รวมข่าว ไกด์ รีวิว เด็ค และปฏิทินเซ็ตใหม่ของเกมการ์ดยอดฮิต — ครบในที่เดียว</p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href={url('/guide')} class="rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--gold)] px-5 py-3 font-semibold text-[#0f1220]">เริ่มจากไกด์มือใหม่</a>
+          <a href={url('/decks')} class="rounded-xl border border-[var(--border)] bg-[var(--bg-elev)] px-5 py-3 font-semibold hover:bg-[var(--bg-elev-2)]">ดูเด็คแนะนำ</a>
+        </div>
+      </div>
+      {hero && (
+        <a href={url(`/article/${hero.id}`)} class="group block overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--bg-elev)]">
+          <div class="relative aspect-[16/10] overflow-hidden">
+            {hero.data.hero ? <img src={url(hero.data.hero)} alt="" class="h-full w-full object-cover" /> : (
+              <div class="grid h-full w-full place-items-center" style="background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 45%, #0f1220), #0f1220)">
+                <span class="font-head text-7xl font-black text-white/70">{hero.data.title.slice(0,1)}</span>
+              </div>
+            )}
+            <div class="absolute left-4 top-4"><TypeBadge type={hero.data.type} size="lg" /></div>
+          </div>
+          <div class="p-5">
+            <h2 class="font-head text-xl font-bold group-hover:text-[var(--accent)]">{hero.data.title}</h2>
+            <p class="mt-2 line-clamp-2 text-sm text-[var(--fg-muted)]">{hero.data.description}</p>
+            <p class="mt-3 text-xs text-[var(--fg-muted)]">บทความเด่น · {readingTime(hero.body || '')} นาที</p>
+          </div>
+        </a>
+      )}
+    </div>
+  </section>
+
+  <!-- ถัดไป 2 รายการ -->
+  {nextUp.length > 0 && (
+    <section class="mx-auto max-w-[var(--maxw)] px-4 pt-10">
+      <h2 class="mb-4 font-head text-2xl font-extrabold">ถัดไป</h2>
+      <div class="grid gap-4 sm:grid-cols-2">
+        {nextUp.map((s) => (
+          <div class="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-5">
+            <p class="text-xs text-[var(--gold)]">{gameName.get(s.data.game) || s.data.game} · {new Intl.DateTimeFormat('th-TH',{month:'long',day:'numeric',timeZone:'UTC'}).format(new Date(s.data.date))}</p>
+            <h3 class="mt-1 font-head text-lg font-bold">{s.data.title}</h3>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- ข่าวล่าสุด -->
+  <section class="mx-auto max-w-[var(--maxw)] px-4 pt-12">
+    <div class="mb-5 flex items-end justify-between"><h2 class="font-head text-2xl font-extrabold">ข่าวล่าสุด</h2><a href={url('/news')} class="text-sm font-semibold text-[var(--gold)] hover:underline">ดูทั้งหมด →</a></div>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{news.map((a) => <ArticleCard article={a} />)}</div>
+  </section>
+
+  <!-- ไกด์ยอดนิยม -->
+  <section class="mx-auto max-w-[var(--maxw)] px-4 pt-12">
+    <div class="mb-5 flex items-end justify-between"><h2 class="font-head text-2xl font-extrabold">ไกด์ยอดนิยม</h2><a href={url('/guide')} class="text-sm font-semibold text-[var(--gold)] hover:underline">ดูทั้งหมด →</a></div>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{guides.map((a) => <ArticleCard article={a} />)}</div>
+  </section>
+
+  <!-- เด็คมาแรง -->
+  <section class="mx-auto max-w-[var(--maxw)] px-4 pt-12">
+    <div class="mb-5 flex items-end justify-between"><h2 class="font-head text-2xl font-extrabold">เด็คมาแรง</h2><a href={url('/decks')} class="text-sm font-semibold text-[var(--gold)] hover:underline">ดูทั้งหมด →</a></div>
+    <div class="grid gap-4 lg:grid-cols-2">{trendingDecks.map((d) => <DeckCard deck={d} />)}</div>
+  </section>
+
+  <!-- เกมยอดนิยม -->
+  <section class="mx-auto max-w-[var(--maxw)] px-4 pt-12">
+    <h2 class="mb-5 font-head text-2xl font-extrabold">เกมยอดนิยม</h2>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{popularGames.map((g) => <GameCard game={g} />)}</div>
+  </section>
+
+  <!-- ปฏิทินเซ็ตใหม่ -->
+  <section class="mx-auto max-w-[var(--maxw)] px-4 pt-12">
+    <div class="mb-5 flex items-end justify-between"><h2 class="font-head text-2xl font-extrabold">เซ็ตใหม่ที่กำลังจะมาถึง</h2><a href={url('/calendar')} class="text-sm font-semibold text-[var(--gold)] hover:underline">ปฏิทินทั้งหมด →</a></div>
+    <ul class="grid gap-3">{upcoming.slice(0,5).map((s) => <SetRow item={s} gameName={gameName.get(s.data.game)} />)}</ul>
+  </section>
+
+  <!-- หัวข้อแนะนำ -->
+  <section class="mx-auto max-w-[var(--maxw)] px-4 pt-12">
+    <h2 class="mb-5 font-head text-2xl font-extrabold">หัวข้อแนะนำ</h2>
+    <div class="flex flex-wrap gap-2">{allTags.map((t) => <TagPill tag={t} />)}</div>
+  </section>
+</BaseLayout>

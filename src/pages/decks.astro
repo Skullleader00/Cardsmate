@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import DeckCard from '../components/DeckCard.astro';
+import { LEVEL_LABEL } from '../lib/utils';
+
+const decks = await getCollection('decks', ({ data }) => !data.draft);
+const games = await getCollection('games');
+const gameName = new Map(games.map((g) => [g.id, g.data.shortName]));
+const gameIds = [...new Set(decks.map((d) => d.data.game))];
+const levels = ['meta', 'mid', 'budget'];
+---
+<BaseLayout title="เด็คแนะนำ" description="รวมเด็คแนะนำพร้อมฟิลเตอร์ตามเกม ระดับ และ tier (เนื้อหาตัวอย่าง)">
+  <PageHeader title="เด็คแนะนำ" eyebrow="Decks" desc="เลือกตามเกม ระดับความคุ้มค่า และ meta tier — ทุกเด็คเป็นข้อมูลตัวอย่าง" />
+  <div class="mx-auto max-w-[var(--maxw)] px-4 py-8">
+    <div class="mb-6 space-y-3" id="deck-filters">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="w-16 text-sm text-[var(--fg-muted)]">เกม:</span>
+        <button data-f="game" data-v="" class="chip is-active">ทั้งหมด</button>
+        {gameIds.map((g) => (<button data-f="game" data-v={g} class="chip">{gameName.get(g) || g}</button>))}
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="w-16 text-sm text-[var(--fg-muted)]">ระดับ:</span>
+        <button data-f="level" data-v="" class="chip is-active">ทั้งหมด</button>
+        {levels.map((l) => (<button data-f="level" data-v={l} class="chip">{LEVEL_LABEL[l]}</button>))}
+      </div>
+    </div>
+
+    <div class="grid gap-4 lg:grid-cols-2" id="deck-grid">
+      {decks.map((d) => (
+        <div data-game={d.data.game} data-level={d.data.level}><DeckCard deck={d} /></div>
+      ))}
+    </div>
+    <p id="deck-empty" class="hidden py-16 text-center text-[var(--fg-muted)]">ไม่พบเด็คที่ตรงกับตัวกรอง</p>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  .chip { border:1px solid var(--border); background:var(--bg-elev); color:var(--fg-muted);
+    border-radius:9999px; padding:.25rem .75rem; font-size:.85rem; transition:.15s; }
+  .chip:hover { color:var(--fg); border-color:var(--accent); }
+  .chip.is-active { border-color:var(--gold); background:var(--gold); color:#0f1220; }
+</style>
+<script>
+  const state = { game: '', level: '' };
+  function apply() {
+    let shown = 0;
+    document.querySelectorAll('#deck-grid > div').forEach((el) => {
+      const ok = (!state.game || el.dataset.game === state.game) && (!state.level || el.dataset.level === state.level);
+      (el as HTMLElement).style.display = ok ? '' : 'none';
+      if (ok) shown++;
+    });
+    document.getElementById('deck-empty')?.classList.toggle('hidden', shown !== 0);
+  }
+  document.querySelectorAll('#deck-filters .chip').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const f = (btn as HTMLElement).dataset.f!;
+      const v = (btn as HTMLElement).dataset.v!;
+      state[f] = v;
+      document.querySelectorAll(`#deck-filters [data-f="${f}"]`).forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      apply();
+    });
+  });
+</script>

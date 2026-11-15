@@ -1,0 +1,106 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SetRow from '../components/SetRow.astro';
+import { sortByDate } from '../lib/utils';
+
+const sets = sortByDate(await getCollection('sets', ({ data }) => !data.draft)).reverse();
+const games = await getCollection('games');
+const gameName = new Map(games.map((g) => [g.id, g.data.shortName]));
+gameName.set('general', 'หลายเกม');
+const gameIds = [...new Set(sets.map((s) => s.data.game))];
+
+// group by YYYY-MM for month view
+const byMonth: Record<string, typeof sets> = {};
+for (const s of sets) {
+  const key = `${new Date(s.data.date).getUTCFullYear()}-${String(new Date(s.data.date).getUTCMonth() + 1).padStart(2, '0')}`;
+  (byMonth[key] ||= []).push(s);
+}
+const monthLabel = (key: string) => {
+  const [y, m] = key.split('-').map(Number);
+  return new Intl.DateTimeFormat('th-TH', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(y, m - 1, 1)));
+};
+---
+<BaseLayout title="ปฏิทินเซ็ตและอีเวนต์" description="ปฏิทินเซ็ตใหม่ แบนลิสต์ และอีเวนต์เกมการ์ด แยกตามเกม (เนื้อหาตัวอย่าง)">
+  <PageHeader title="ปฏิทินเซ็ต & อีเวนต์" eyebrow="Calendar" desc="รายการที่กำลังจะมาถึงและที่ผ่านมาแล้ว (ข้อมูลตัวอย่าง) สลับมุมมองเดือน/ลิสต์ได้" />
+  <div class="mx-auto max-w-[var(--maxw)] px-4 py-8">
+    <div class="mb-6 flex flex-wrap items-center gap-2">
+      <span class="mr-1 text-sm text-[var(--fg-muted)]">เกม:</span>
+      <button data-game="" class="chip is-active">ทั้งหมด</button>
+      {gameIds.map((g) => (<button data-game={g} class="chip">{gameName.get(g) || g}</button>))}
+      <div class="ml-auto flex gap-1 rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] p-1">
+        <button id="view-list" class="seg is-active">ลิสต์</button>
+        <button id="view-month" class="seg">เดือน</button>
+      </div>
+    </div>
+
+    <!-- LIST VIEW -->
+    <ul id="list-view" class="grid gap-3">
+      {sets.map((s) => (<li data-game={s.data.game}><SetRow item={s} gameName={gameName.get(s.data.game)} /></li>))}
+    </ul>
+
+    <!-- MONTH VIEW -->
+    <div id="month-view" class="hidden grid-cols-1 gap-5 md:grid-cols-2">
+      {Object.entries(byMonth).map(([key, items]) => (
+        <section data-game={items.map((i) => i.data.game).join(' ')} class="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-5">
+          <h2 class="font-head text-lg font-extrabold text-[var(--gold)]">{monthLabel(key)}</h2>
+          <ul class="mt-3 grid gap-3">
+            {items.map((s) => (<li data-game={s.data.game}><SetRow item={s} gameName={gameName.get(s.data.game)} /></li>))}
+          </ul>
+        </section>
+      ))}
+    </div>
+    <p id="cal-empty" class="hidden py-16 text-center text-[var(--fg-muted)]">ไม่พบรายการที่ตรงกับตัวกรอง</p>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  .chip { border:1px solid var(--border); background:var(--bg-elev); color:var(--fg-muted); border-radius:9999px; padding:.25rem .75rem; font-size:.85rem; transition:.15s; }
+  .chip:hover { color:var(--fg); border-color:var(--accent); }
+  .chip.is-active { border-color:var(--gold); background:var(--gold); color:#0f1220; }
+  .seg { padding:.35rem .9rem; border-radius:8px; font-size:.85rem; color:var(--fg-muted); }
+  .seg.is-active { background:var(--bg-elev-2); color:var(--fg); font-weight:600; }
+</style>
+<script>
+  let game = '';
+  let view = 'list';
+  function apply() {
+    // list items
+    let shown = 0;
+    document.querySelectorAll('#list-view > li').forEach((li) => {
+      const ok = !game || (li as HTMLElement).dataset.game === game;
+      (li as HTMLElement).style.display = ok ? '' : 'none';
+      if (ok) shown++;
+    });
+    // month sections + inner items
+    document.querySelectorAll('#month-view > section').forEach((sec) => {
+      const games = ((sec as HTMLElement).dataset.game || '').split(' ');
+      const secOk = !game || games.includes(game);
+      (sec as HTMLElement).style.display = secOk ? '' : 'none';
+      sec.querySelectorAll('li').forEach((li) => {
+        const ok = !game || (li as HTMLElement).dataset.game === game;
+        (li as HTMLElement).style.display = ok ? '' : 'none';
+        if (ok) shown++;
+      });
+    });
+    document.getElementById('cal-empty')?.classList.toggle('hidden', shown !== 0);
+    // view toggle
+    document.getElementById('list-view')!.classList.toggle('hidden', view !== 'list');
+    const mv = document.getElementById('month-view')!;
+    mv.classList.toggle('hidden', view !== 'month');
+    document.getElementById('view-list')!.classList.toggle('is-active', view === 'list');
+    document.getElementById('view-month')!.classList.toggle('is-active', view === 'month');
+  }
+  document.querySelectorAll('[data-game]').forEach((b) => {
+    if (b.tagName !== 'BUTTON') return;
+    b.addEventListener('click', () => {
+      game = (b as HTMLElement).dataset.game || '';
+      document.querySelectorAll('.chip').forEach((c) => c.classList.remove('is-active'));
+      b.classList.add('is-active');
+      apply();
+    });
+  });
+  document.getElementById('view-list')!.addEventListener('click', () => { view = 'list'; apply(); });
+  document.getElementById('view-month')!.addEventListener('click', () => { view = 'month'; apply(); });
+</script>

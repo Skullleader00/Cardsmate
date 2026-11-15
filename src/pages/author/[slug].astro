@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { url } from '../../site';
+import { sortByDate } from '../../lib/utils';
+import ArticleCard from '../../components/ArticleCard.astro';
+import DeckCard from '../../components/DeckCard.astro';
+import authors from '../../data/authors.json';
+
+const allAuthors = authors as Record<string, { name: string; role: string; bio: string; avatar: string }>;
+
+export async function getStaticPaths() {
+  const { default: a } = await import('../../data/authors.json');
+  return Object.entries(a as Record<string, any>).map(([slug, author]) => ({ params: { slug }, props: { author } }));
+}
+
+const { author } = Astro.props;
+const articles = sortByDate((await getCollection('articles', ({ data }) => !data.draft)).filter((a) => a.data.author === Astro.params.slug));
+const decks = (await getCollection('decks', ({ data }) => !data.draft)).filter((d) => d.data.author === Astro.params.slug);
+---
+<BaseLayout title={author.name} description={author.bio}>
+  <div class="mx-auto max-w-[var(--maxw)] px-4 py-10">
+    <div class="flex flex-wrap items-center gap-5">
+      <img src={url(author.avatar)} alt="" class="h-20 w-20 rounded-full border border-[var(--border)] object-cover" width="80" height="80" />
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest text-[var(--accent)]">ผู้เขียน</p>
+        <h1 class="font-head text-3xl font-black">{author.name}</h1>
+        <p class="text-sm text-[var(--gold)]">{author.role}</p>
+        <p class="mt-2 max-w-2xl text-[var(--fg-muted)]">{author.bio}</p>
+      </div>
+    </div>
+
+    <section class="mt-10">
+      <h2 class="mb-4 font-head text-xl font-extrabold">บทความ ({articles.length})</h2>
+      {articles.length ? <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{articles.map((a) => <ArticleCard article={a} />)}</div> : <p class="text-[var(--fg-muted)]">ยังไม่มีบทความ</p>}
+    </section>
+    {decks.length > 0 && (
+      <section class="mt-10">
+        <h2 class="mb-4 font-head text-xl font-extrabold">เด็ค ({decks.length})</h2>
+        <div class="grid gap-4 lg:grid-cols-2">{decks.map((d) => <DeckCard deck={d} />)}</div>
+      </section>
+    )}
+  </div>
+</BaseLayout>

@@ -1,0 +1,87 @@
+---
+import { getCollection, render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { readingTime, LEVEL_LABEL, DIFFICULTY_LABEL } from '../../lib/utils';
+import { url } from '../../site';
+
+export async function getStaticPaths() {
+  const decks = await getCollection('decks', ({ data }) => !data.draft);
+  return decks.map((d) => ({ params: { slug: d.id }, props: { deck: d } }));
+}
+
+const { deck } = Astro.props;
+const d = deck.data;
+const { Content, headings } = await render(deck);
+const all = await getCollection('decks', ({ data }) => !data.draft);
+const related = all.filter((x) => x.id !== deck.id && x.data.game === d.game).slice(0, 3);
+
+const sections: Record<string, { name: string; qty: number }[]> = {};
+for (const c of d.cardList || []) {
+  (sections[c.section] ||= []).push({ name: c.name, qty: c.qty });
+}
+const total = (d.cardList || []).reduce((n, c) => n + c.qty, 0);
+---
+<ArticleLayout
+  kind="deck"
+  id={deck.id}
+  title={d.title}
+  description={d.summary}
+  game={d.game}
+  author={d.author}
+  date={d.date}
+  updated={d.updated}
+  tags={d.tags}
+  hero={d.hero}
+  difficulty={d.difficulty}
+  budget={d.budget}
+  audience={d.classClan ? `สาย ${d.classClan}` : undefined}
+  level={d.level}
+  tier={d.tier}
+  minutes={readingTime(deck.body || '')}
+  headings={headings}
+  related={related}
+>
+  <div class="mb-8 rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-5">
+    <div class="flex flex-wrap items-center gap-4 text-sm">
+      <span><b class="text-[var(--gold)]">{total}</b> ใบ</span>
+      <span>ระดับ: <b>{LEVEL_LABEL[d.level]}</b></span>
+      <span>ความยาก: <b>{DIFFICULTY_LABEL[d.difficulty]}</b></span>
+      {d.classClan && <span>คลาส/เคลน: <b>{d.classClan}</b></span>}
+    </div>
+    {d.playstyle && <p class="mt-3 text-[var(--fg-muted)]">แนวทางเล่น: {d.playstyle}</p>}
+  </div>
+
+  {(d.strengths.length > 0 || d.weaknesses.length > 0) && (
+    <div class="mb-8 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-2xl border border-[var(--border)] p-5" style="background:color-mix(in srgb, var(--tag-guide) 10%, var(--bg-elev))">
+        <h2 class="font-head font-bold" style="color:var(--tag-guide)">จุดแข็ง</h2>
+        <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">{d.strengths.map((s) => <li>{s}</li>)}</ul>
+      </div>
+      <div class="rounded-2xl border border-[var(--border)] p-5" style="background:color-mix(in srgb, var(--tier-s) 10%, var(--bg-elev))">
+        <h2 class="font-head font-bold" style="color:var(--tier-s)">จุดอ่อน</h2>
+        <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">{d.weaknesses.map((s) => <li>{s}</li>)}</ul>
+      </div>
+    </div>
+  )}
+
+  {total > 0 && (
+    <div class="mb-8 overflow-x-auto rounded-2xl border border-[var(--border)]">
+      <table class="w-full text-sm">
+        <thead class="bg-[var(--bg-elev-2)]"><tr><th class="px-4 py-2 text-left">โซน</th><th class="px-4 py-2 text-left">การ์ด</th><th class="px-4 py-2 text-right">จำนวน</th></tr></thead>
+        <tbody>
+          {Object.entries(sections).map(([sec, cards]) =>
+            cards.map((c, i) => (
+              <tr class="border-t border-[var(--border)]">
+                {i === 0 && <td class="px-4 py-2 align-top font-semibold text-[var(--accent)]" rowSpan={cards.length}>{sec}</td>}
+                <td class="px-4 py-2"><span class="card-embed" data-card={c.name} tabindex="0">{c.name}</span></td>
+                <td class="px-4 py-2 text-right tabular-nums">{c.qty}</td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  )}
+
+  <Content />
+</ArticleLayout>
