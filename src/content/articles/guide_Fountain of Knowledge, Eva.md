@@ -9,7 +9,7 @@ updated: 2026-11-21
 difficulty: beginner        
 audience: 'มือใหม่'    
 tags: [บรันเกต, ไกด์]
-featured: false
+featured: true
 draft: false
 hero: /placeholders/Fountain_of_Knowledge_Eva/ar02.png
 ---
